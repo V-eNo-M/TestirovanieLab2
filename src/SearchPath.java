@@ -4,48 +4,87 @@ import java.util.ArrayList;
  * Created by 1 on 13.10.2015.
  */
 public class SearchPath {
-    private ArrayList<ArrayList<Integer>> tabl = new ArrayList<ArrayList<Integer>>();
+    private boolean tabl[][];
+
+    public ArrayList<Integer> getPath() {
+        return path;
+    }
+
+    public ArrayList<Integer> getViewed() {
+        return viewed;
+    }
+
+    public ArrayList<String> getManyPath() {
+        return manyPath;
+    }
+
     private ArrayList<Integer> path = new ArrayList<Integer>();
-    private ArrayList<Integer> viewed= new ArrayList<Integer>();
-    private Integer start;
-    private Integer end;
+    private ArrayList<Integer> viewed = new ArrayList<Integer>();
+    private ArrayList<String> manyPath = new ArrayList<String>();
+    private int start;
+    private int end;
+    private int nextIndex = 0;
 
-    public void SearchPath() {
-
+    public SearchPath(boolean[][] t, int start, int end) {
+        tabl = t;
+        this.end = end-1;
+        this.start = start-1;
+        path.add(this.start);
     }
 
-    public int SearchInTabl() {
-        path.add(start);
-
-        int numberString = 0;
-        for (int i = 1; i < tabl.get(0).size(); i++) {
-            if (tabl.get(start).get(i) == 1) {
-                if (tabl.get(0).get(i) != end) {
-                    path.add((tabl.get(0).get(i)));
-                }
+    public void Main() {
+        while(!path.isEmpty()) {
+            if (path.get(path.size() - 1) != end) {
+                Search(nextIndex);
+            } else {
+                String m = path.toString();
+                manyPath.add(m);
+                nextIndex = path.get(path.size()-1) + 1;
+                path.remove(path.size()-1);
             }
-
-
+            //return path;
         }
-        return numberString;
     }
 
-    public int SearchStart() {
-        int numberString = -101;
-        for (int i = 0; i < tabl.size(); i++) {
-            if(start == tabl.get(i).get(0));
-            numberString = i;
-        }
-        return numberString;
-    }
-    public  int Search(int str, int stolb) {
-        int next = -102;
-        for (int i = stolb; i < tabl.get(str).size(); i++) {
-            if (tabl.get(str).get(i) == 1) {
-                next = tabl.get(0).get(i);
+    public void Search(int in) {
+        for (int i = in; i < tabl[0].length; i++) {
+            if (tabl[path.get(path.size() - 1)][i] && !CheckInPath(i) && !Check(i)) {
+                path.add(i);
+                nextIndex = 0;
                 break;
             }
+            else
+             if (i == tabl[0].length - 1 && (!tabl[path.get(path.size() - 1)][i] || Check(i))) {
+                   if ((path.get(path.size() - 1) + 1 < tabl[0].length)) {
+                        nextIndex = (path.get(path.size() - 1)) + 1;
+                       viewed.add(path.get(path.size() - 1));
+                    }
+                 else {
+                       nextIndex = path.get(path.size() - 1);
+                       viewed.add(path.get(path.size() - 1));
+                   }
+                    path.remove(path.size() - 1);
+                    break;
+             }
         }
-        return next;
+
+    }
+    public boolean Check(int i) {
+        boolean yesOrNo = false;
+        for (Integer aViewed : viewed) {
+            if (aViewed == i) {
+                yesOrNo = true;
+            }
+        }
+        return yesOrNo;
+    }
+    public boolean CheckInPath(int i) {
+        boolean yesOrNo = false;
+        for (Integer aPath : path) {
+            if (aPath == i) {
+                yesOrNo = true;
+            }
+        }
+        return yesOrNo;
     }
 }
